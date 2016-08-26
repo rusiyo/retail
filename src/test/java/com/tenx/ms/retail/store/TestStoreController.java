@@ -28,6 +28,8 @@ import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = RetailServiceApp.class)
@@ -37,11 +39,14 @@ public class TestStoreController extends AbstractIntegrationTest {
     @Autowired
     private ObjectMapper mapper;
 
-    @Value("classpath:storeTests/create-store-request.json")
-    private File createStoreRequest;
+    @Value("classpath:storeTests/errors/phone.json")
+    private File badRequest1;
 
-    @Value("classpath:storeTests/bad-store-request.json")
-    private File badStoreRequest;
+    @Value("classpath:storeTests/success/create-store-request.json")
+    private File goodRequest1;
+
+    @Value("classpath:storeTests/success/minimal.json")
+    private File goodRequest2;
 
     private static final String API_VERSION = RestConstants.VERSION_ONE;
 
@@ -62,33 +67,68 @@ public class TestStoreController extends AbstractIntegrationTest {
     }
 
     @Test
-    public void badCreateStore() {
-        try {
-            ResponseEntity<String> response = getJSONResponse(template, String.format(REQUEST_URI, basePath()), FileUtils.readFileToString(badStoreRequest), HttpMethod.POST);
-            assertEquals("HTTP Status code incorrect", HttpStatus.PRECONDITION_FAILED, response.getStatusCode());
-        } catch (IOException e) {
-            fail(e.getMessage());
+    public void testValidationOnAllFieldsForCreateStore() {
+        List<File> validationFiles = Arrays.asList(badRequest1);
+        for (File file : validationFiles) {
+            try {
+                ResponseEntity<String> response = getJSONResponse(template, String.format(REQUEST_URI, basePath()), FileUtils.readFileToString(file), HttpMethod.POST);
+                assertEquals("HTTP Status code incorrect", HttpStatus.PRECONDITION_FAILED, response.getStatusCode());
+            } catch (IOException e) {
+                fail(e.getMessage());
+            }
         }
     }
 
     @Test
-    public void createStore() {
+    public void testCreateStore() {
+        Long storeId = createStore(goodRequest1).longValue();
+        Store store = getStore(storeId);
+        assertNotNull(store);
+        validateLocation(store);
+        validateManagerName(store);
+        validateName(store);
+        validatePhone(store);
+    }
+
+    @Test
+    public void testCreateStoreMinimal() {
+        Long storeId = createStore(goodRequest2).longValue();
+        Store store = getStore(storeId);
+        assertNotNull(store);
+        validateStoreId(store, storeId);
+    }
+
+    private void validatePhone(Store store){
+        assertEquals("Store's Phone is incorrect", store.getPhone(), "786-955-4232");
+    }
+
+    private void validateStoreId(Store store, Long storeId){
+        assertEquals("Store's Phone is incorrect", store.getStoreId(), storeId);
+    }
+
+    private void validateManagerName(Store store){
+        assertEquals("Store's Manage Name is incorrect", store.getManagerName(), "John Target");
+    }
+
+    private void validateName(Store store){
+        assertEquals("Store's Name is incorrect", store.getName(), "Target");
+    }
+
+    private void validateLocation(Store store){
+        assertEquals("Store's Location is incorrect", store.getLocation(), "11253 Pines Blvd, Hollywood, FL 33026");
+    }
+
+    private Integer createStore(File file) {
         try {
-            ResponseEntity<String> response = getJSONResponse(template, String.format(REQUEST_URI, basePath()), FileUtils.readFileToString(createStoreRequest), HttpMethod.POST);
+            ResponseEntity<String> response = getJSONResponse(template, String.format(REQUEST_URI, basePath()), FileUtils.readFileToString(file), HttpMethod.POST);
             String received = response.getBody();
             assertEquals("HTTP Status code incorrect", HttpStatus.OK, response.getStatusCode());
             ResourceCreated<Integer> rc = mapper.readValue(received, ResourceCreated.class);
-            Integer storeId = rc.getId();
-            // try to get the inserted store and verify its content
-            Store store = getStore(storeId.longValue());
-            assertNotNull(store);
-            assertEquals("Store's Location is incorrect", store.getLocation(), "11253 Pines Blvd, Hollywood, FL 33026");
-            assertEquals("Store's Name is incorrect", store.getName(), "Target");
-            assertEquals("Store's Manage Name is incorrect", store.getManagerName(), "John Target");
-            assertEquals("Store's Phone is incorrect", store.getPhone(), "786-955-4232");
+            return rc.getId();
         } catch (IOException e) {
             fail(e.getMessage());
         }
+        return null;
     }
 
     private Store getStore(Long storeId) {

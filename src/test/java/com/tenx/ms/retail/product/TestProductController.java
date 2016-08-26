@@ -26,6 +26,7 @@ import org.springframework.web.client.RestTemplate;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -38,11 +39,17 @@ public class TestProductController extends AbstractIntegrationTest {
     @Autowired
     private ObjectMapper mapper;
 
-    @Value("classpath:productTests/create-product-request.json")
-    private File createProductRequest;
+    @Value("classpath:productTests/success/create-product-request.json")
+    private File goodRequest1;
 
-    @Value("classpath:productTests/bad-create-product-request.json")
-    private File badCreateProductRequest;
+    @Value("classpath:productTests/success/minimal.json")
+    private File goodRequest2;
+
+    @Value("classpath:productTests/error/sku.json")
+    private File badRequest1;
+
+    @Value("classpath:productTests/error/price.json")
+    private File badRequest2;
 
     private static final String API_VERSION = RestConstants.VERSION_ONE;
 
@@ -57,42 +64,109 @@ public class TestProductController extends AbstractIntegrationTest {
     }
 
     @Test
-    public void badCreateProduct() {
-        try {
-            ResponseEntity<String> response = getJSONResponse(template, String.format(REQUEST_URI, basePath()), FileUtils.readFileToString(badCreateProductRequest), HttpMethod.POST);
-            assertEquals("HTTP Status code incorrect", HttpStatus.PRECONDITION_FAILED, response.getStatusCode());
-        } catch (IOException e) {
-            fail(e.getMessage());
+    public void badCreateProduct412() {
+        List<File> validationFiles = Arrays.asList(badRequest1);
+        for (File file : validationFiles) {
+            try {
+                ResponseEntity<String> response = getJSONResponse(template, String.format(REQUEST_URI, basePath()), FileUtils.readFileToString(file), HttpMethod.POST);
+                assertEquals("HTTP Status code incorrect", HttpStatus.PRECONDITION_FAILED, response.getStatusCode());
+            } catch (IOException e) {
+                fail(e.getMessage());
+            }
         }
     }
 
     @Test
-    public void createProduct() {
-        try {
-            ResponseEntity<String> response = getJSONResponse(template, String.format(REQUEST_URI, basePath()), FileUtils.readFileToString(createProductRequest), HttpMethod.POST);
-            String received = response.getBody();
-            Long storeId = new Long(1);
-            assertEquals("HTTP Status code incorrect", HttpStatus.OK, response.getStatusCode());
-            ResourceCreated<Integer> rc = mapper.readValue(received, ResourceCreated.class);
-            Integer productId = rc.getId();
-            // try to get the inserted product and verify its content
-            Product product = getProduct(storeId, productId.longValue());
-            assertNotNull(product);
-            assertEquals("Product's Name is incorrect", product.getName(), "BOSE Home Theater");
-            assertEquals("Product's Description is incorrect", product.getDescription(), "Awesome sound system");
-            assertEquals("Product's Sku is incorrect", product.getSku(), "ABC12345");
-            assertTrue("Product's Price is incorrect", product.getPrice().compareTo(new BigDecimal("3500.51")) == 0);
-            assertEquals("Product's ProductId is incorrect", product.getProductId(), (Long) productId.longValue());
-            assertEquals("Product's StoreId is incorrect", product.getStoreId(), storeId);
-
-            List<Product> storeProducts = getProductsByStore(storeId);
-            for (Product storeProduct : storeProducts) {
-                assertEquals("Product's StoreId is incorrect", storeProduct.getStoreId(), storeId);
+    public void badCreateProduct400() {
+        List<File> validationFiles = Arrays.asList(badRequest2);
+        for (File file : validationFiles) {
+            try {
+                ResponseEntity<String> response = getJSONResponse(template, String.format(REQUEST_URI, basePath()), FileUtils.readFileToString(file), HttpMethod.POST);
+                assertEquals("HTTP Status code incorrect", HttpStatus.BAD_REQUEST, response.getStatusCode());
+            } catch (IOException e) {
+                fail(e.getMessage());
             }
+        }
+    }
 
+    @Test
+    public void testCreateProduct() {
+        Long storeId = new Long(1);
+        Integer productId = createProduct(goodRequest1);
+        // try to get the inserted product and verify its content
+        Product product = getProduct(storeId, productId.longValue());
+        assertNotNull(product);
+        validateDescription(product, "Awesome sound system");
+        validateName(product, "BOSE Home Theater");
+        validatePrice(product, new BigDecimal("3500.51"));
+        validateProductId(product, productId.longValue());
+        validateSKU(product, "ABC12345");
+        validateStoreId(product, storeId);
+        validateStoreProducts(storeId);
+    }
+
+    @Test
+    public void testCreateProductMinimal() {
+        Long storeId = new Long(1);
+        Integer productId = createProduct(goodRequest2);
+        // try to get the inserted product and verify its content
+        Product product = getProduct(storeId, productId.longValue());
+        assertNotNull(product);
+        validateDescription(product, null);
+        validateName(product, null);
+        validatePrice(product, null);
+        validateProductId(product, productId.longValue());
+        validateSKU(product, null);
+        validateStoreId(product, storeId);
+        validateStoreProducts(storeId);
+    }
+
+    private void validateStoreProducts(Long storeId) {
+        List<Product> storeProducts = getProductsByStore(storeId);
+        for (Product storeProduct : storeProducts) {
+            assertEquals("Product's StoreId is incorrect", storeProduct.getStoreId(), storeId);
+        }
+    }
+
+    private void validateName(Product product, String expected) {
+        assertEquals("Product's Name is incorrect", product.getName(), expected);
+    }
+
+    private void validateDescription(Product product, String expected) {
+        assertEquals("Product's Description is incorrect", product.getDescription(), expected);
+    }
+
+    private void validateSKU(Product product, String expected) {
+        assertEquals("Product's Sku is incorrect", product.getSku(), expected);
+    }
+
+    private void validatePrice(Product product, BigDecimal expected) {
+        if (expected == null) {
+            assertEquals("Product's Price is incorrect", product.getPrice(), expected);
+        } else {
+            assertTrue("Product's Price is incorrect", product.getPrice().compareTo(expected) == 0);
+        }
+    }
+
+    private void validateProductId(Product product, Long expected) {
+        assertEquals("Product's ProductId is incorrect", product.getProductId(), expected);
+    }
+
+    private void validateStoreId(Product product, Long expected) {
+        assertEquals("Product's StoreId is incorrect", product.getStoreId(), expected);
+    }
+
+    private Integer createProduct(File file) {
+        try {
+            ResponseEntity<String> response = getJSONResponse(template, String.format(REQUEST_URI, basePath()), FileUtils.readFileToString(file), HttpMethod.POST);
+            String received = response.getBody();
+            ResourceCreated<Integer> rc = mapper.readValue(received, ResourceCreated.class);
+            assertEquals("HTTP Status code incorrect", HttpStatus.OK, response.getStatusCode());
+            return rc.getId();
         } catch (IOException e) {
             fail(e.getMessage());
         }
+        return null;
     }
 
     private Product getProduct(Long storeId, Long productId) {

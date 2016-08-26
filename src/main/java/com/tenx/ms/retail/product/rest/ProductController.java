@@ -33,18 +33,16 @@ public class ProductController extends AbstractController{
     private ProductService productService;
 
     @ApiOperation(value = "Get all products by store id")
-    @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "Successful retrieval of products in store"),
-        @ApiResponse(code = 500, message = "Internal server error")})
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "Successful retrieval of products in store"), @ApiResponse(code = 500, message = "Internal server error")})
     @RequestMapping(method = RequestMethod.GET, value = {"/{storeId:\\d+}"})
     public List<Product> getProducts(@ApiParam(value = "storeId", required = false) Long storeId, Pageable pageable) {
         LOGGER.debug("Fetching Products");
+
         return productService.getProductsByStoreId(storeId, pageable);
     }
 
     @ApiOperation(value = "")
-    @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "Successful retrieval of product in store"),
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "Successful retrieval of product in store"),
         @ApiResponse(code = 500, message = "Internal server error")})
     @RequestMapping(value = {"/{storeId:\\d+}/{productId:\\d+}"}, method = RequestMethod.GET)
     public Object getProductById(@ApiParam(value = "storeId", required = false) @PathVariable long storeId, @ApiParam(name = "productId", value = "The id of the product to fetch") @PathVariable long productId) {
