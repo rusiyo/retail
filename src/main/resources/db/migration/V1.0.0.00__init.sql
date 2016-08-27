@@ -16,3 +16,10 @@ CREATE TABLE product (
     price decimal(15,2) DEFAULT NULL,
     PRIMARY KEY (product_id)
 ) ENGINE=InnoDB AUTO_INCREMENT=1;
+
+CREATE TABLE stock (
+    product_id BIGINT NOT NULL,
+    store_id BIGINT NOT NULL,
+    count INT NOT NULL,
+    PRIMARY KEY (product_id, store_id)
+) ENGINE=InnoDB AUTO_INCREMENT=1;
