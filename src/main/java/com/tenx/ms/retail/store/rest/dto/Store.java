@@ -5,6 +5,8 @@ import io.swagger.annotations.ApiModelProperty;
 import org.apache.avro.reflect.Nullable;
 import org.springframework.data.annotation.ReadOnlyProperty;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * Created by javier on 8/25/16.
  */

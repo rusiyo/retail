@@ -7,6 +7,7 @@ import org.apache.avro.reflect.Nullable;
 import org.apache.avro.specific.FixedSize;
 import org.springframework.format.annotation.NumberFormat;
 
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.math.BigDecimal;
@@ -17,6 +18,7 @@ public class Product {
     private Long productId;
 
     @ApiModelProperty(value = "The Store where the product is registered", readOnly = true)
+    @NotNull
     private Long storeId;
 
     @ApiModelProperty("The name of the Product")
