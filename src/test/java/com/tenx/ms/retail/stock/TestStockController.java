@@ -1,0 +1,78 @@
+package com.tenx.ms.retail.stock;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tenx.ms.commons.config.Profiles;
+import com.tenx.ms.commons.rest.RestConstants;
+import com.tenx.ms.commons.rest.dto.ResourceCreated;
+import com.tenx.ms.commons.tests.AbstractIntegrationTest;
+import com.tenx.ms.retail.RetailServiceApp;
+import com.tenx.ms.retail.store.rest.dto.Store;
+import org.apache.commons.io.FileUtils;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.boot.test.TestRestTemplate;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.web.client.RestTemplate;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.junit.Assert.*;
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@SpringApplicationConfiguration(classes = RetailServiceApp.class)
+@ActiveProfiles(Profiles.TEST_NOAUTH)
+public class TestStockController extends AbstractIntegrationTest {
+
+    @Value("classpath:stockTests/errors/no_count.json")
+    private File badRequest1;
+
+    @Value("classpath:stockTests/errors/no_product.json")
+    private File badRequest2;
+
+    @Value("classpath:stockTests/errors/no_store.json")
+    private File badRequest3;
+
+    @Value("classpath:stockTests/success/success.json")
+    private File goodRequest1;
+
+    private static final String API_VERSION = RestConstants.VERSION_ONE;
+
+    private static final String REQUEST_URI = "%s" + API_VERSION + "/stock/";
+
+    private final RestTemplate template = new TestRestTemplate();
+
+    @Test
+    public void testValidationOnAllFieldsForCreateStock() {
+        List<File> validationFiles = Arrays.asList(badRequest1, badRequest2, badRequest3);
+        for (File file : validationFiles) {
+            try {
+                ResponseEntity<String> response = getJSONResponse(template, String.format(REQUEST_URI, basePath()), FileUtils.readFileToString(file), HttpMethod.POST);
+                assertEquals("HTTP Status code incorrect", HttpStatus.PRECONDITION_FAILED, response.getStatusCode());
+            } catch (IOException e) {
+                fail(e.getMessage());
+            }
+        }
+    }
+
+    @Test
+    public void testCreateStock() {
+        try {
+            ResponseEntity<String> response = getJSONResponse(template, String.format(REQUEST_URI, basePath()), FileUtils.readFileToString(goodRequest1), HttpMethod.POST);
+            String received = response.getBody();
+            assertEquals("HTTP Status code incorrect", HttpStatus.OK, response.getStatusCode());
+            assertEquals("Body is not empty", received, null);
+        } catch (IOException e) {
+            fail(e.getMessage());
+        }
+    }
+}
