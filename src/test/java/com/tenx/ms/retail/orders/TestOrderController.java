@@ -37,41 +37,29 @@ import static org.junit.Assert.fail;
 @TestExecutionListeners({DependencyInjectionTestExecutionListener.class, FlywayTestExecutionListener.class})
 public class TestOrderController extends AbstractIntegrationTest {
 
+    private static final String API_VERSION = RestConstants.VERSION_ONE;
+    private static final String REQUEST_URI = "%s" + API_VERSION + "/orders/";
+    private final RestTemplate template = new TestRestTemplate();
     @Value("classpath:orderTests/errors/no_date.json")
     private File badRequest1;
-
     @Value("classpath:orderTests/errors/no_email.json")
     private File badRequest2;
-
     @Value("classpath:orderTests/errors/no_first_name.json")
     private File badRequest3;
-
     @Value("classpath:orderTests/errors/no_last_name.json")
     private File badRequest4;
-
     @Value("classpath:orderTests/errors/no_phone.json")
     private File badRequest5;
-
     @Value("classpath:orderTests/errors/no_products.json")
     private File badRequest6;
-
     @Value("classpath:orderTests/errors/no_status.json")
     private File badRequest7;
-
     @Value("classpath:orderTests/errors/no_store.json")
     private File badRequest8;
-
     @Value("classpath:orderTests/errors/invalid.json")
     private File invalidRequest1;
-
     @Value("classpath:orderTests/success/success.json")
     private File goodRequest1;
-
-    private static final String API_VERSION = RestConstants.VERSION_ONE;
-
-    private static final String REQUEST_URI = "%s" + API_VERSION + "/orders/";
-
-    private final RestTemplate template = new TestRestTemplate();
 
     @Test
     @FlywayTest

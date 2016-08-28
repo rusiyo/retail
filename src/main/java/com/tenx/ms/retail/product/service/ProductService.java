@@ -4,8 +4,6 @@ import com.tenx.ms.retail.product.domain.ProductEntity;
 import com.tenx.ms.retail.product.repository.ProductRepository;
 import com.tenx.ms.retail.product.rest.dto.Product;
 import com.tenx.ms.retail.product.util.ProductConverter;
-import com.tenx.ms.retail.store.domain.StoreEntity;
-import com.tenx.ms.retail.store.rest.dto.Store;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,6 +1,13 @@
 package com.tenx.ms.retail.order.domain;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -8,39 +15,31 @@ import java.util.List;
 @Table(name = "order_table")
 public class OrderEntity {
 
-    public OrderEntity(Long orderId, Long storeId) {
-        this.orderId = orderId;
-        this.storeId = storeId;
-    }
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "order_id")
     private Long orderId;
-
     @Column(name = "store_id")
     private Long storeId;
-
     @Column(name = "order_date")
     private Timestamp orderDate;
-
     @Column(name = "status")
     private Integer statusId;
-
     @Column(name = "first_name")
     private String firstName;
-
     @Column(name = "last_name")
     private String lastName;
-
     @Column(name = "email")
     private String email;
-
     @Column(name = "phone")
     private String phone;
-
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderProductEntity> products;
+
+    public OrderEntity(Long orderId, Long storeId) {
+        this.orderId = orderId;
+        this.storeId = storeId;
+    }
 
     public Long getOrderId() {
         return orderId;

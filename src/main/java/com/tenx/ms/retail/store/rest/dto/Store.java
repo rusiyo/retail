@@ -3,7 +3,6 @@ package com.tenx.ms.retail.store.rest.dto;
 import com.tenx.ms.commons.validation.constraints.PhoneNumber;
 import io.swagger.annotations.ApiModelProperty;
 import org.apache.avro.reflect.Nullable;
-import org.springframework.data.annotation.ReadOnlyProperty;
 
 import javax.validation.constraints.NotNull;
 

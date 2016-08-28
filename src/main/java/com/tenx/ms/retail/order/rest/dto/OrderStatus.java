@@ -11,10 +11,6 @@ public enum OrderStatus {
         this.id = id;
     }
 
-    public int getId() {
-        return this.id;
-    }
-
     public static OrderStatus getOrderStatusByName(String name) {
         if (StringUtils.isNotBlank(name)) {
             for (OrderStatus status : OrderStatus.values()) {
@@ -41,5 +37,9 @@ public enum OrderStatus {
             isValid = true;
         }
         return isValid;
+    }
+
+    public int getId() {
+        return this.id;
     }
 }

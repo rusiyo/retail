@@ -1,11 +1,7 @@
 package com.tenx.ms.retail.product.rest.dto;
 
 import com.tenx.ms.commons.validation.constraints.DollarAmount;
-import com.tenx.ms.retail.store.rest.dto.Store;
 import io.swagger.annotations.ApiModelProperty;
-import org.apache.avro.reflect.Nullable;
-import org.apache.avro.specific.FixedSize;
-import org.springframework.format.annotation.NumberFormat;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;

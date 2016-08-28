@@ -10,31 +10,30 @@ import com.tenx.ms.retail.store.rest.dto.Store;
 import org.apache.commons.io.FileUtils;
 import org.flywaydb.test.annotation.FlywayTest;
 import org.flywaydb.test.junit.FlywayTestExecutionListener;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.boot.test.TestRestTemplate;
 import org.springframework.boot.test.WebIntegrationTest;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.web.client.RestTemplate;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.test.context.ActiveProfiles;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
+import static org.springframework.test.util.AssertionErrors.assertEquals;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebIntegrationTest(randomPort = true)
@@ -43,23 +42,17 @@ import java.util.List;
 @TestExecutionListeners({DependencyInjectionTestExecutionListener.class, FlywayTestExecutionListener.class})
 public class TestStoreController extends AbstractIntegrationTest {
 
+    private static final String API_VERSION = RestConstants.VERSION_ONE;
+    private static final String REQUEST_URI = "%s" + API_VERSION + "/stores/";
+    private final RestTemplate template = new TestRestTemplate();
     @Autowired
     private ObjectMapper mapper;
-
     @Value("classpath:storeTests/errors/phone.json")
     private File badRequest1;
-
     @Value("classpath:storeTests/success/create-store-request.json")
     private File goodRequest1;
-
     @Value("classpath:storeTests/success/minimal.json")
     private File goodRequest2;
-
-    private static final String API_VERSION = RestConstants.VERSION_ONE;
-
-    private static final String REQUEST_URI = "%s" + API_VERSION + "/stores/";
-
-    private final RestTemplate template = new TestRestTemplate();
 
     @Test
     @FlywayTest
@@ -94,7 +87,7 @@ public class TestStoreController extends AbstractIntegrationTest {
     public void testCreateStore() {
         Long storeId = createStore(goodRequest1).longValue();
         Store store = getStore(storeId);
-        assertNotNull(store);
+        assertNotNull("Store cannot be null", store);
         validateLocation(store);
         validateManagerName(store);
         validateName(store);
@@ -106,27 +99,27 @@ public class TestStoreController extends AbstractIntegrationTest {
     public void testCreateStoreMinimal() {
         Long storeId = createStore(goodRequest2).longValue();
         Store store = getStore(storeId);
-        assertNotNull(store);
+        assertNotNull("Store cannot be null", store);
         validateStoreId(store, storeId);
     }
 
-    private void validatePhone(Store store){
+    private void validatePhone(Store store) {
         assertEquals("Store's Phone is incorrect", store.getPhone(), "786-955-4232");
     }
 
-    private void validateStoreId(Store store, Long storeId){
+    private void validateStoreId(Store store, Long storeId) {
         assertEquals("Store's Phone is incorrect", store.getStoreId(), storeId);
     }
 
-    private void validateManagerName(Store store){
+    private void validateManagerName(Store store) {
         assertEquals("Store's Manage Name is incorrect", store.getManagerName(), "John Target");
     }
 
-    private void validateName(Store store){
+    private void validateName(Store store) {
         assertEquals("Store's Name is incorrect", store.getName(), "Target");
     }
 
-    private void validateLocation(Store store){
+    private void validateLocation(Store store) {
         assertEquals("Store's Location is incorrect", store.getLocation(), "11253 Pines Blvd, Hollywood, FL 33026");
     }
 

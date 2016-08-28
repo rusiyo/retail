@@ -1,21 +1,15 @@
 package com.tenx.ms.retail.stock.domain;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.IdClass;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "stock")
 @IdClass(StockEntityPK.class)
 public class StockEntity {
-
-    public StockEntity(Long storeId, Long productId, Integer count) {
-        this.storeId = storeId;
-        this.productId = productId;
-        this.count = count;
-    }
-
-    public StockEntity() {
-
-    }
 
     @Id
     @Column(name = "store_id")
@@ -27,6 +21,16 @@ public class StockEntity {
 
     @Column(name = "count")
     private Integer count;
+
+    public StockEntity(Long storeId, Long productId, Integer count) {
+        this.storeId = storeId;
+        this.productId = productId;
+        this.count = count;
+    }
+
+    public StockEntity() {
+
+    }
 
     public Integer getCount() {
         return count;

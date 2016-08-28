@@ -3,11 +3,9 @@ package com.tenx.ms.retail.stock;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tenx.ms.commons.config.Profiles;
 import com.tenx.ms.commons.rest.RestConstants;
-import com.tenx.ms.commons.rest.dto.ResourceCreated;
 import com.tenx.ms.commons.tests.AbstractIntegrationTest;
 import com.tenx.ms.retail.RetailServiceApp;
 import com.tenx.ms.retail.stock.rest.dto.Stock;
-import com.tenx.ms.retail.store.rest.dto.Store;
 import org.apache.commons.io.FileUtils;
 import org.flywaydb.test.annotation.FlywayTest;
 import org.flywaydb.test.junit.FlywayTestExecutionListener;
@@ -32,7 +30,8 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebIntegrationTest(randomPort = true)
@@ -41,29 +40,21 @@ import static org.junit.Assert.*;
 @TestExecutionListeners({DependencyInjectionTestExecutionListener.class, FlywayTestExecutionListener.class})
 public class TestStockController extends AbstractIntegrationTest {
 
+    private static final String API_VERSION = RestConstants.VERSION_ONE;
+    private static final String REQUEST_URI = "%s" + API_VERSION + "/stock/";
+    private final RestTemplate template = new TestRestTemplate();
     @Autowired
     private ObjectMapper mapper;
-
     @Value("classpath:stockTests/errors/no_count.json")
     private File badRequest1;
-
     @Value("classpath:stockTests/errors/no_product.json")
     private File badRequest2;
-
     @Value("classpath:stockTests/errors/no_store.json")
     private File badRequest3;
-
     @Value("classpath:stockTests/success/success.json")
     private File goodRequest1;
-
     @Value("classpath:stockTests/success/success-second.json")
     private File goodRequest2;
-
-    private static final String API_VERSION = RestConstants.VERSION_ONE;
-
-    private static final String REQUEST_URI = "%s" + API_VERSION + "/stock/";
-
-    private final RestTemplate template = new TestRestTemplate();
 
     @Test
     @FlywayTest

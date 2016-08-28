@@ -3,8 +3,6 @@ package com.tenx.ms.retail.stock.util;
 
 import com.tenx.ms.retail.stock.domain.StockEntity;
 import com.tenx.ms.retail.stock.rest.dto.Stock;
-import com.tenx.ms.retail.stock.domain.StockEntity;
-import com.tenx.ms.retail.stock.rest.dto.Stock;
 import org.springframework.stereotype.Component;
 
 @Component

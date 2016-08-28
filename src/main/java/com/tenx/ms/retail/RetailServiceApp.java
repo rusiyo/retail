@@ -22,7 +22,7 @@ public class RetailServiceApp {
     private static String[] getDefaultProfile(String[] args) {
         SimpleCommandLinePropertySource properties = new SimpleCommandLinePropertySource(args);
         if (!properties.containsProperty("spring.profiles.active") && System.getenv("SPRING_PROFILES_ACTIVE") == null) {
-            return new String[] { "dev" };
+            return new String[]{"dev"};
         }
         return new String[0];
     }
@@ -32,8 +32,8 @@ public class RetailServiceApp {
      */
     public static void main(String[] args) {
         new SpringApplicationBuilder(RetailServiceApp.class)
-                .bannerMode(Banner.Mode.OFF)
-                .profiles(getDefaultProfile(args))
-                .run(args);
+            .bannerMode(Banner.Mode.OFF)
+            .profiles(getDefaultProfile(args))
+            .run(args);
     }
 }

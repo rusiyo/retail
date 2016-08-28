@@ -13,6 +13,37 @@ import java.util.List;
 
 public class Order {
 
+    @ApiModelProperty(value = "The order ID", readOnly = true)
+    private Long orderId;
+    @ApiModelProperty(value = "The store ID", readOnly = true)
+    @NotNull
+    private Long storeId;
+    @ApiModelProperty(value = "The creation date of the order")
+    @DateTimeFormat
+    @NotNull
+    private Timestamp orderDate;
+    @ApiModelProperty("Status of the order (i.e. ORDERED, PACKING, SHIPPED)")
+    @NotNull
+    private OrderStatus status;
+    @ApiModelProperty("The purchaser's first name (alpha only)")
+    @Pattern(regexp = "[a-zA-Z]*$")
+    @NotNull
+    private String firstName;
+    @ApiModelProperty("The purchaser's last name (alpha only)")
+    @NotNull
+    private String lastName;
+    @ApiModelProperty("Email address of the purchaser")
+    @Email
+    @NotNull
+    private String email;
+    @ApiModelProperty("Purchaser's Phone number")
+    @PhoneNumber
+    @NotNull
+    private String phone;
+    @ApiModelProperty("Products included in this order")
+    @NotNull
+    private List<OrderProduct> products;
+
     public Order() {
     }
 
@@ -20,45 +51,6 @@ public class Order {
         this.orderId = orderId;
         this.storeId = storeId;
     }
-
-    @ApiModelProperty(value = "The order ID", readOnly = true)
-    private Long orderId;
-
-    @ApiModelProperty(value = "The store ID", readOnly = true)
-    @NotNull
-    private Long storeId;
-
-    @ApiModelProperty(value = "The creation date of the order")
-    @DateTimeFormat
-    @NotNull
-    private Timestamp orderDate;
-
-    @ApiModelProperty("Status of the order (i.e. ORDERED, PACKING, SHIPPED)")
-    @NotNull
-    private OrderStatus status;
-
-    @ApiModelProperty("The purchaser's first name (alpha only)")
-    @Pattern(regexp = "[a-zA-Z]*$")
-    @NotNull
-    private String firstName;
-
-    @ApiModelProperty("The purchaser's last name (alpha only)")
-    @NotNull
-    private String lastName;
-
-    @ApiModelProperty("Email address of the purchaser")
-    @Email
-    @NotNull
-    private String email;
-
-    @ApiModelProperty("Purchaser's Phone number")
-    @PhoneNumber
-    @NotNull
-    private String phone;
-
-    @ApiModelProperty("Products included in this order")
-    @NotNull
-    private List<OrderProduct> products;
 
     public Long getOrderId() {
         return orderId;

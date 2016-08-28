@@ -8,7 +8,6 @@ import com.tenx.ms.commons.rest.dto.ResourceCreated;
 import com.tenx.ms.commons.tests.AbstractIntegrationTest;
 import com.tenx.ms.retail.RetailServiceApp;
 import com.tenx.ms.retail.product.rest.dto.Product;
-import com.tenx.ms.retail.store.rest.dto.Store;
 import org.apache.commons.io.FileUtils;
 import org.flywaydb.test.annotation.FlywayTest;
 import org.flywaydb.test.junit.FlywayTestExecutionListener;
@@ -34,7 +33,11 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebIntegrationTest(randomPort = true)
@@ -43,44 +46,29 @@ import static org.junit.Assert.*;
 @TestExecutionListeners({DependencyInjectionTestExecutionListener.class, FlywayTestExecutionListener.class})
 public class TestProductController extends AbstractIntegrationTest {
 
+    private static final String API_VERSION = RestConstants.VERSION_ONE;
+    private static final String REQUEST_URI = "%s" + API_VERSION + "/products/";
+    private final RestTemplate template = new TestRestTemplate();
     @Autowired
     private ObjectMapper mapper;
-
     @Value("classpath:productTests/success/create-product-request.json")
     private File goodRequest1;
-
-    @Value("classpath:productTests/success/minimal.json")
-    private File goodRequest2;
-
     @Value("classpath:productTests/error/sku.json")
     private File badRequest1;
-
     @Value("classpath:productTests/error/price.json")
     private File badRequest2;
-
     @Value("classpath:productTests/error/sku-short.json")
     private File badRequest3;
-
     @Value("classpath:productTests/error/missing-description.json")
     private File badRequest4;
-
     @Value("classpath:productTests/error/missing-name.json")
     private File badRequest5;
-
     @Value("classpath:productTests/error/missing-price.json")
     private File badRequest6;
-
     @Value("classpath:productTests/error/missing-sku.json")
     private File badRequest7;
-
     @Value("classpath:productTests/error/missing-store.json")
     private File badRequest8;
-
-    private static final String API_VERSION = RestConstants.VERSION_ONE;
-
-    private static final String REQUEST_URI = "%s" + API_VERSION + "/products/";
-
-    private final RestTemplate template = new TestRestTemplate();
 
     @Test
     @FlywayTest
@@ -120,11 +108,11 @@ public class TestProductController extends AbstractIntegrationTest {
     @Test
     @FlywayTest
     public void testCreateProduct() {
-        Long storeId = new Long(1);
+        Long storeId = Long.valueOf("1");
         Integer productId = createProduct(goodRequest1);
         // try to get the inserted product and verify its content
         Product product = getProduct(storeId, productId.longValue());
-        assertNotNull(product);
+        assertNotNull("Product cannot be null", product);
         validateDescription(product, "Awesome sound system");
         validateName(product, "BOSE Home Theater");
         validatePrice(product, new BigDecimal("3500.51"));
@@ -155,9 +143,9 @@ public class TestProductController extends AbstractIntegrationTest {
 
     private void validatePrice(Product product, BigDecimal expected) {
         if (expected == null) {
-            assertEquals("Product's Price is incorrect", product.getPrice(), expected);
+            assertNull("Product's Price is incorrect", product.getPrice());
         } else {
-            assertTrue("Product's Price is incorrect", product.getPrice().compareTo(expected) == 0);
+            assertSame("Product's Price is incorrect", product.getPrice().compareTo(expected), 0);
         }
     }
 
@@ -201,7 +189,8 @@ public class TestProductController extends AbstractIntegrationTest {
             ResponseEntity<String> response = getJSONResponse(template, String.format(REQUEST_URI, basePath()) + storeId, null, HttpMethod.GET);
             String received = response.getBody();
             assertEquals(String.format("HTTP Status code incorrect %s", response.getBody()), HttpStatus.OK, response.getStatusCode());
-            products = mapper.readValue(received,  new TypeReference<List<Product>>(){});
+            products = mapper.readValue(received, new TypeReference<List<Product>>() {
+            });
         } catch (IOException e) {
             fail(e.getMessage());
         }

@@ -3,17 +3,10 @@ package com.tenx.ms.retail.product.util;
 
 import com.tenx.ms.retail.product.domain.ProductEntity;
 import com.tenx.ms.retail.product.rest.dto.Product;
-import com.tenx.ms.retail.store.domain.StoreEntity;
-import com.tenx.ms.retail.store.rest.dto.Store;
-import com.tenx.ms.retail.store.util.StoreConverter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class ProductConverter {
-
-    @Autowired
-    StoreConverter storeConverter;
 
     public ProductEntity convertToProductEntity(Product product) {
         ProductEntity productEntity = new ProductEntity();

@@ -1,7 +1,6 @@
 package com.tenx.ms.retail.product.repository;
 
 import com.tenx.ms.retail.product.domain.ProductEntity;
-import com.tenx.ms.retail.store.domain.StoreEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.PagingAndSortingRepository;

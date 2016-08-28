@@ -9,6 +9,15 @@ import javax.validation.constraints.NotNull;
  */
 public class OrderProduct {
 
+    @ApiModelProperty(value = "The Id of the order", readOnly = true)
+    private Long orderId;
+    @ApiModelProperty(value = "The Id of the product", readOnly = true)
+    @NotNull
+    private Long productId;
+    @ApiModelProperty(value = "The quantity of product that the order includes")
+    @NotNull
+    private Integer count;
+
     public OrderProduct() {
     }
 
@@ -17,17 +26,6 @@ public class OrderProduct {
         this.productId = productId;
         this.count = count;
     }
-
-    @ApiModelProperty(value = "The Id of the order", readOnly = true)
-    private Long orderId;
-
-    @ApiModelProperty(value = "The Id of the product", readOnly = true)
-    @NotNull
-    private Long productId;
-
-    @ApiModelProperty(value = "The quantity of product that the order includes")
-    @NotNull
-    private Integer count;
 
     public Long getOrderId() {
         return orderId;

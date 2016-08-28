@@ -1,42 +1,35 @@
 package com.tenx.ms.retail.store.domain;
 
-import com.tenx.ms.retail.product.domain.ProductEntity;
-import com.tenx.ms.retail.product.rest.dto.Product;
-
-import javax.persistence.*;
-import java.util.List;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "store")
 public class StoreEntity {
 
-    public StoreEntity() {
-
-    }
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "store_id")
     private Long storeId;
-
     @Column(name = "name")
     private String name;
-
     @Column(name = "location")
     private String location;
-
     @Column(name = "manager_name")
     private String managerName;
-
     @Column(name = "phone")
     private String phone;
 
-    public void setStoreId(Long storeId) {
-        this.storeId = storeId;
-    }
-
     public Long getStoreId() {
         return storeId;
+    }
+
+    public void setStoreId(Long storeId) {
+        this.storeId = storeId;
     }
 
     public String getName() {
@@ -63,7 +56,9 @@ public class StoreEntity {
         this.managerName = managerName;
     }
 
-    public String getPhone() { return phone; }
+    public String getPhone() {
+        return phone;
+    }
 
     public void setPhone(String phone) {
         this.phone = phone;

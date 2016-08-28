@@ -3,9 +3,9 @@ package com.tenx.ms.retail.order.util;
 
 import com.tenx.ms.retail.order.domain.OrderEntity;
 import com.tenx.ms.retail.order.domain.OrderProductEntity;
+import com.tenx.ms.retail.order.rest.dto.Order;
 import com.tenx.ms.retail.order.rest.dto.OrderProduct;
 import com.tenx.ms.retail.order.rest.dto.OrderStatus;
-import com.tenx.ms.retail.order.rest.dto.Order;
 import org.springframework.stereotype.Component;
 
 import java.util.stream.Collectors;

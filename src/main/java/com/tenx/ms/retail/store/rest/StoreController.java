@@ -6,14 +6,24 @@ import com.tenx.ms.commons.rest.dto.ResourceCreated;
 import com.tenx.ms.retail.exceptions.UpdateViolationException;
 import com.tenx.ms.retail.store.rest.dto.Store;
 import com.tenx.ms.retail.store.service.StoreService;
-import io.swagger.annotations.*;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -23,7 +33,7 @@ import java.util.List;
 @Api(value = "store", description = "This provides the ability to create, update and delete new Stores.")
 @RestController("storeControllerV1")
 @RequestMapping(RestConstants.VERSION_ONE + "/stores")
-public class StoreController extends AbstractController{
+public class StoreController extends AbstractController {
     private static final Logger LOGGER = LoggerFactory.getLogger(StoreController.class);
 
     @Autowired
@@ -56,7 +66,7 @@ public class StoreController extends AbstractController{
         @ApiResponse(code = 412, message = "Validation failure."),
         @ApiResponse(code = 500, message = "Internal server error")})
     @RequestMapping(method = RequestMethod.POST)
-    public ResourceCreated<Long> createStore(@ApiParam(name = "store", value = "The store entity", required = true) @Validated @RequestBody Store store){
+    public ResourceCreated<Long> createStore(@ApiParam(name = "store", value = "The store entity", required = true) @Validated @RequestBody Store store) {
         LOGGER.debug("Creating store {}", store);
         return new ResourceCreated<Long>(storeService.createStore(store));
     }
