@@ -15,7 +15,7 @@ public class Store {
     private Long storeId;
 
     @ApiModelProperty(value = "The Store Name")
-    @Nullable
+    @NotNull
     private String name;
 
     @ApiModelProperty("The location of the store")

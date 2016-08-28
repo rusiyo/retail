@@ -1,7 +1,6 @@
 package com.tenx.ms.retail.stock.domain;
 
 import javax.persistence.*;
-import java.io.Serializable;
 
 @Entity
 @Table(name = "stock")
@@ -9,7 +8,7 @@ import java.io.Serializable;
 public class StockEntity {
 
     public StockEntity(Long storeId, Long productId, Integer count) {
-        StoreId = storeId;
+        this.storeId = storeId;
         this.productId = productId;
         this.count = count;
     }
@@ -20,7 +19,7 @@ public class StockEntity {
 
     @Id
     @Column(name = "store_id")
-    private Long StoreId;
+    private Long storeId;
 
     @Id
     @Column(name = "product_id")
@@ -42,7 +41,7 @@ public class StockEntity {
     }
 
     public Long getStoreId() {
-        return StoreId;
+        return storeId;
     }
 
 }

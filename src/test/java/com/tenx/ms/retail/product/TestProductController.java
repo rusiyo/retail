@@ -10,17 +10,22 @@ import com.tenx.ms.retail.RetailServiceApp;
 import com.tenx.ms.retail.product.rest.dto.Product;
 import com.tenx.ms.retail.store.rest.dto.Store;
 import org.apache.commons.io.FileUtils;
+import org.flywaydb.test.annotation.FlywayTest;
+import org.flywaydb.test.junit.FlywayTestExecutionListener;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.boot.test.TestRestTemplate;
+import org.springframework.boot.test.WebIntegrationTest;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.File;
@@ -32,8 +37,10 @@ import java.util.List;
 import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
+@WebIntegrationTest(randomPort = true)
 @SpringApplicationConfiguration(classes = RetailServiceApp.class)
 @ActiveProfiles(Profiles.TEST_NOAUTH)
+@TestExecutionListeners({DependencyInjectionTestExecutionListener.class, FlywayTestExecutionListener.class})
 public class TestProductController extends AbstractIntegrationTest {
 
     @Autowired
@@ -51,6 +58,24 @@ public class TestProductController extends AbstractIntegrationTest {
     @Value("classpath:productTests/error/price.json")
     private File badRequest2;
 
+    @Value("classpath:productTests/error/sku-short.json")
+    private File badRequest3;
+
+    @Value("classpath:productTests/error/missing-description.json")
+    private File badRequest4;
+
+    @Value("classpath:productTests/error/missing-name.json")
+    private File badRequest5;
+
+    @Value("classpath:productTests/error/missing-price.json")
+    private File badRequest6;
+
+    @Value("classpath:productTests/error/missing-sku.json")
+    private File badRequest7;
+
+    @Value("classpath:productTests/error/missing-store.json")
+    private File badRequest8;
+
     private static final String API_VERSION = RestConstants.VERSION_ONE;
 
     private static final String REQUEST_URI = "%s" + API_VERSION + "/products/";
@@ -58,14 +83,16 @@ public class TestProductController extends AbstractIntegrationTest {
     private final RestTemplate template = new TestRestTemplate();
 
     @Test
+    @FlywayTest
     public void getProductsInNonExistingStore() {
         ResponseEntity<String> response = getJSONResponse(template, String.format(REQUEST_URI, basePath()) + "5006", null, HttpMethod.GET);
         assertEquals("HTTP Status code incorrect", HttpStatus.OK, response.getStatusCode());
     }
 
     @Test
+    @FlywayTest
     public void badCreateProduct412() {
-        List<File> validationFiles = Arrays.asList(badRequest1);
+        List<File> validationFiles = Arrays.asList(badRequest1, badRequest3, badRequest4, badRequest5, badRequest6, badRequest7, badRequest8);
         for (File file : validationFiles) {
             try {
                 ResponseEntity<String> response = getJSONResponse(template, String.format(REQUEST_URI, basePath()), FileUtils.readFileToString(file), HttpMethod.POST);
@@ -77,6 +104,7 @@ public class TestProductController extends AbstractIntegrationTest {
     }
 
     @Test
+    @FlywayTest
     public void badCreateProduct400() {
         List<File> validationFiles = Arrays.asList(badRequest2);
         for (File file : validationFiles) {
@@ -90,6 +118,7 @@ public class TestProductController extends AbstractIntegrationTest {
     }
 
     @Test
+    @FlywayTest
     public void testCreateProduct() {
         Long storeId = new Long(1);
         Integer productId = createProduct(goodRequest1);
@@ -101,22 +130,6 @@ public class TestProductController extends AbstractIntegrationTest {
         validatePrice(product, new BigDecimal("3500.51"));
         validateProductId(product, productId.longValue());
         validateSKU(product, "ABC12345");
-        validateStoreId(product, storeId);
-        validateStoreProducts(storeId);
-    }
-
-    @Test
-    public void testCreateProductMinimal() {
-        Long storeId = new Long(1);
-        Integer productId = createProduct(goodRequest2);
-        // try to get the inserted product and verify its content
-        Product product = getProduct(storeId, productId.longValue());
-        assertNotNull(product);
-        validateDescription(product, null);
-        validateName(product, null);
-        validatePrice(product, null);
-        validateProductId(product, productId.longValue());
-        validateSKU(product, null);
         validateStoreId(product, storeId);
         validateStoreProducts(storeId);
     }

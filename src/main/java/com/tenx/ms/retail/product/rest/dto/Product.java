@@ -22,22 +22,22 @@ public class Product {
     private Long storeId;
 
     @ApiModelProperty("The name of the Product")
-    @Nullable
+    @NotNull
     private String name;
 
     @ApiModelProperty("Product description")
-    @Nullable
+    @NotNull
     private String description;
 
     @ApiModelProperty("Product price")
     @DollarAmount
-    @Nullable
+    @NotNull
     private BigDecimal price;
 
     @ApiModelProperty("The phone to contact the store")
     @Size(min = 5, max = 10)
     @Pattern(regexp = "[a-zA-Z0-9]*$")
-    @Nullable
+    @NotNull
     private String sku;
 
     public Long getProductId() {

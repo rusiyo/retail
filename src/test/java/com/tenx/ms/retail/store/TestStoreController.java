@@ -8,13 +8,18 @@ import com.tenx.ms.commons.tests.AbstractIntegrationTest;
 import com.tenx.ms.retail.RetailServiceApp;
 import com.tenx.ms.retail.store.rest.dto.Store;
 import org.apache.commons.io.FileUtils;
+import org.flywaydb.test.annotation.FlywayTest;
+import org.flywaydb.test.junit.FlywayTestExecutionListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.TestRestTemplate;
+import org.springframework.boot.test.WebIntegrationTest;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.web.client.RestTemplate;
 
 import org.junit.Test;
@@ -32,8 +37,10 @@ import java.util.Arrays;
 import java.util.List;
 
 @RunWith(SpringJUnit4ClassRunner.class)
+@WebIntegrationTest(randomPort = true)
 @SpringApplicationConfiguration(classes = RetailServiceApp.class)
 @ActiveProfiles(Profiles.TEST_NOAUTH)
+@TestExecutionListeners({DependencyInjectionTestExecutionListener.class, FlywayTestExecutionListener.class})
 public class TestStoreController extends AbstractIntegrationTest {
 
     @Autowired
@@ -55,18 +62,21 @@ public class TestStoreController extends AbstractIntegrationTest {
     private final RestTemplate template = new TestRestTemplate();
 
     @Test
+    @FlywayTest
     public void getStores() {
         ResponseEntity<String> response = getJSONResponse(template, String.format(REQUEST_URI, basePath()), null, HttpMethod.GET);
         assertEquals("HTTP Status code incorrect", HttpStatus.OK, response.getStatusCode());
     }
 
     @Test
+    @FlywayTest
     public void getStore() {
         ResponseEntity<String> response = getJSONResponse(template, String.format(REQUEST_URI, basePath()) + "5006", null, HttpMethod.GET);
         assertEquals("HTTP Status code incorrect", HttpStatus.NOT_FOUND, response.getStatusCode());
     }
 
     @Test
+    @FlywayTest
     public void testValidationOnAllFieldsForCreateStore() {
         List<File> validationFiles = Arrays.asList(badRequest1);
         for (File file : validationFiles) {
@@ -80,6 +90,7 @@ public class TestStoreController extends AbstractIntegrationTest {
     }
 
     @Test
+    @FlywayTest
     public void testCreateStore() {
         Long storeId = createStore(goodRequest1).longValue();
         Store store = getStore(storeId);
@@ -91,6 +102,7 @@ public class TestStoreController extends AbstractIntegrationTest {
     }
 
     @Test
+    @FlywayTest
     public void testCreateStoreMinimal() {
         Long storeId = createStore(goodRequest2).longValue();
         Store store = getStore(storeId);

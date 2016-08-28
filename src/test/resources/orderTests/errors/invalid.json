@@ -1,0 +1,23 @@
+{
+    "store_id": 1,
+    "order_date": "2016-04-01T19:01:02",
+    "status": "ERROR",
+    "products": [
+        {
+            "product_id": 1,
+            "count": 5
+        },
+        {
+            "product_id": 2,
+            "count": 3
+        },
+        {
+            "product_id": 3,
+            "count": 9
+        }
+    ],
+    "first_name": "Javier",
+    "last_name": "Manzanares",
+    "email": "test@account.com",
+    "phone": "786-970-0939"
+}
