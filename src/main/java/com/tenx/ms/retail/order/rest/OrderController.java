@@ -39,17 +39,6 @@ public class OrderController extends AbstractController{
         orderService.createOrder(order);
     }
 
-    @ApiOperation(value = "Update Order")
-    @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "Successful creation of order"),
-        @ApiResponse(code = 412, message = "Validation failure."),
-        @ApiResponse(code = 500, message = "Internal server error")})
-    @RequestMapping(method = RequestMethod.POST)
-    public void updateOrder(@ApiParam(name = "order", value = "The order entity", required = true) @Validated @RequestBody Order order){
-        LOGGER.debug("Creating order {}", order);
-        orderService.createOrder(order);
-    }
-
     @ResponseStatus(value = HttpStatus.PRECONDITION_FAILED)
     @ExceptionHandler(UpdateViolationException.class)
     protected void handleUpdateViolationException(UpdateViolationException ex,
