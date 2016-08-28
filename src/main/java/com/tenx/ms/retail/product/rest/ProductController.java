@@ -42,7 +42,9 @@ public class ProductController extends AbstractController{
     }
 
     @ApiOperation(value = "")
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "Successful retrieval of product in store"),
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "Successful retrieval of product in store"),
+        @ApiResponse(code = 404, message = "Product not found in Store"),
         @ApiResponse(code = 500, message = "Internal server error")})
     @RequestMapping(value = {"/{storeId:\\d+}/{productId:\\d+}"}, method = RequestMethod.GET)
     public Object getProductById(@ApiParam(value = "storeId", required = false) @PathVariable long storeId, @ApiParam(name = "productId", value = "The id of the product to fetch") @PathVariable long productId) {

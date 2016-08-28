@@ -42,5 +42,11 @@ public class StockService {
         }
         stockRepository.save(stockEntity);
     }
+
+    public Optional<Stock> findOneByStoreIdAndProductId(Long storeId, Long productId) {
+        return stockRepository.findOneByStoreIdAndProductId(storeId, productId).map(product -> stockConverter.convertToStockDTO(product));
+    }
+
+
 }
 

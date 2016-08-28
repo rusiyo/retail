@@ -6,6 +6,7 @@ import com.tenx.ms.commons.rest.RestConstants;
 import com.tenx.ms.commons.rest.dto.ResourceCreated;
 import com.tenx.ms.commons.tests.AbstractIntegrationTest;
 import com.tenx.ms.retail.RetailServiceApp;
+import com.tenx.ms.retail.stock.rest.dto.Stock;
 import com.tenx.ms.retail.store.rest.dto.Store;
 import org.apache.commons.io.FileUtils;
 import org.flywaydb.test.annotation.FlywayTest;
@@ -39,6 +40,9 @@ import static org.junit.Assert.*;
 @ActiveProfiles(Profiles.TEST_NOAUTH)
 @TestExecutionListeners({DependencyInjectionTestExecutionListener.class, FlywayTestExecutionListener.class})
 public class TestStockController extends AbstractIntegrationTest {
+
+    @Autowired
+    private ObjectMapper mapper;
 
     @Value("classpath:stockTests/errors/no_count.json")
     private File badRequest1;
@@ -93,8 +97,14 @@ public class TestStockController extends AbstractIntegrationTest {
     public void testCreateAndUpdateStock() {
         // Create
         createOrUpdateStock(goodRequest1);
+        // Validate
+        Stock stock = getStock(1L, 1L);
+        assertEquals("Stock count is not correct", stock.getCount(), (Integer) 1);
         // Update
         createOrUpdateStock(goodRequest2);
+        // Validate
+        stock = getStock(1L, 1L);
+        assertEquals("Stock count is not correct", stock.getCount(), (Integer) 3);
     }
 
     private void createOrUpdateStock(File file) {
@@ -106,5 +116,18 @@ public class TestStockController extends AbstractIntegrationTest {
         } catch (IOException e) {
             fail(e.getMessage());
         }
+    }
+
+    private Stock getStock(Long storeId, Long productId) {
+        Stock product = null;
+        try {
+            ResponseEntity<String> response = getJSONResponse(template, String.format(REQUEST_URI, basePath()) + storeId + "/" + productId, null, HttpMethod.GET);
+            String received = response.getBody();
+            assertEquals(String.format("HTTP Status code incorrect %s", response.getBody()), HttpStatus.OK, response.getStatusCode());
+            product = mapper.readValue(received, Stock.class);
+        } catch (IOException e) {
+            fail(e.getMessage());
+        }
+        return product;
     }
 }
