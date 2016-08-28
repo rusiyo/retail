@@ -36,13 +36,13 @@ public class StoreController extends AbstractController{
     @RequestMapping(method = RequestMethod.GET)
     public List<Store> getStores(Pageable pageable) {
         LOGGER.debug("Fetching Stores");
-
         return storeService.getAllStores(pageable);
     }
 
     @ApiOperation(value = "")
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "Successful creation of stores"),
+        @ApiResponse(code = 200, message = "Successful store fetch"),
+        @ApiResponse(code = 404, message = "Store not found"),
         @ApiResponse(code = 500, message = "Internal server error")})
     @RequestMapping(value = {"/{storeId:\\d+}"}, method = RequestMethod.GET)
     public Object getStoreById(@ApiParam(name = "storeId", value = "The id of the store to fetch") @PathVariable long storeId) {
