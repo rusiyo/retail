@@ -13,4 +13,6 @@ import java.util.Optional;
 @Repository
 public interface StockRepository extends PagingAndSortingRepository<StockEntity, Long> {
 
+    Optional<StockEntity> findOneByStoreIdAndProductId(final Long storeId, final Long productId);
+
 }

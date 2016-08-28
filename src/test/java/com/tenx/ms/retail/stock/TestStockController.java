@@ -52,6 +52,9 @@ public class TestStockController extends AbstractIntegrationTest {
     @Value("classpath:stockTests/success/success.json")
     private File goodRequest1;
 
+    @Value("classpath:stockTests/success/success-second.json")
+    private File goodRequest2;
+
     private static final String API_VERSION = RestConstants.VERSION_ONE;
 
     private static final String REQUEST_URI = "%s" + API_VERSION + "/stock/";
@@ -77,6 +80,26 @@ public class TestStockController extends AbstractIntegrationTest {
     public void testCreateStock() {
         try {
             ResponseEntity<String> response = getJSONResponse(template, String.format(REQUEST_URI, basePath()), FileUtils.readFileToString(goodRequest1), HttpMethod.POST);
+            String received = response.getBody();
+            assertEquals("HTTP Status code incorrect", HttpStatus.OK, response.getStatusCode());
+            assertEquals("Body is not empty", received, null);
+        } catch (IOException e) {
+            fail(e.getMessage());
+        }
+    }
+
+    @Test
+    @FlywayTest
+    public void testCreateAndUpdateStock() {
+        // Create
+        createOrUpdateStock(goodRequest1);
+        // Update
+        createOrUpdateStock(goodRequest2);
+    }
+
+    private void createOrUpdateStock(File file) {
+        try {
+            ResponseEntity<String> response = getJSONResponse(template, String.format(REQUEST_URI, basePath()), FileUtils.readFileToString(file), HttpMethod.POST);
             String received = response.getBody();
             assertEquals("HTTP Status code incorrect", HttpStatus.OK, response.getStatusCode());
             assertEquals("Body is not empty", received, null);

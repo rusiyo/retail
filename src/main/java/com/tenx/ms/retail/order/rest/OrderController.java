@@ -33,7 +33,7 @@ public class OrderController extends AbstractController{
         @ApiResponse(code = 200, message = "Successful creation of order"),
         @ApiResponse(code = 412, message = "Validation failure."),
         @ApiResponse(code = 500, message = "Internal server error")})
-    @RequestMapping(method = RequestMethod.PUT)
+    @RequestMapping(method = RequestMethod.POST)
     public void createOrder(@ApiParam(name = "order", value = "The order entity", required = true) @Validated @RequestBody Order order){
         LOGGER.debug("Creating order {}", order);
         orderService.createOrder(order);

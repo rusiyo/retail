@@ -30,9 +30,16 @@ public class StockService {
     private StockConverter stockConverter;
 
     @Transactional
-    public void createStock(Stock stock) {
+    public void createOrUpdateStock(Stock stock) {
+        StockEntity stockEntity;
         LOGGER.debug("Create new {}", stock);
-        StockEntity stockEntity = stockConverter.convertToStockEntity(stock);
+        Optional<StockEntity> existingStockOptional = stockRepository.findOneByStoreIdAndProductId(stock.getStoreId(), stock.getProductId());
+        if (existingStockOptional.isPresent()) {
+            stockEntity = existingStockOptional.get();
+            stockEntity.setCount(stock.getCount());
+        } else {
+            stockEntity = stockConverter.convertToStockEntity(stock);
+        }
         stockRepository.save(stockEntity);
     }
 }

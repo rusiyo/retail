@@ -62,7 +62,7 @@ public class TestOrderController extends AbstractIntegrationTest {
     private File badRequest8;
 
     @Value("classpath:orderTests/errors/invalid.json")
-    private File invalidRequest9;
+    private File invalidRequest1;
 
     @Value("classpath:orderTests/success/success.json")
     private File goodRequest1;
@@ -90,10 +90,10 @@ public class TestOrderController extends AbstractIntegrationTest {
     @Test
     @FlywayTest
     public void testInvalidCreateOrder() {
-        List<File> validationFiles = Arrays.asList(invalidRequest9);
+        List<File> validationFiles = Arrays.asList(invalidRequest1);
         for (File file : validationFiles) {
             try {
-                ResponseEntity<String> response = getJSONResponse(template, String.format(REQUEST_URI, basePath()), FileUtils.readFileToString(file), HttpMethod.PUT);
+                ResponseEntity<String> response = getJSONResponse(template, String.format(REQUEST_URI, basePath()), FileUtils.readFileToString(file), HttpMethod.POST);
                 assertEquals("HTTP Status code incorrect", HttpStatus.BAD_REQUEST, response.getStatusCode());
             } catch (IOException e) {
                 fail(e.getMessage());
@@ -104,19 +104,6 @@ public class TestOrderController extends AbstractIntegrationTest {
     @Test
     @FlywayTest
     public void testCreateOrder() {
-        try {
-            ResponseEntity<String> response = getJSONResponse(template, String.format(REQUEST_URI, basePath()), FileUtils.readFileToString(goodRequest1), HttpMethod.PUT);
-            String received = response.getBody();
-            assertEquals("HTTP Status code incorrect", HttpStatus.OK, response.getStatusCode());
-            assertEquals("Body is not empty", received, null);
-        } catch (IOException e) {
-            fail(e.getMessage());
-        }
-    }
-
-    @Test
-    @FlywayTest
-    public void testUpdateOrder() {
         try {
             ResponseEntity<String> response = getJSONResponse(template, String.format(REQUEST_URI, basePath()), FileUtils.readFileToString(goodRequest1), HttpMethod.POST);
             String received = response.getBody();

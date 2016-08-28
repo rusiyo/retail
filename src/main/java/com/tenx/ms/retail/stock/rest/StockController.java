@@ -29,15 +29,15 @@ public class StockController extends AbstractController{
     @Autowired
     private StockService stockService;
 
-    @ApiOperation(value = "Create Stock")
+    @ApiOperation(value = "Create/Update Stock")
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "Successful creation of stock"),
+        @ApiResponse(code = 200, message = "Successful creation/update of stock"),
         @ApiResponse(code = 412, message = "Validation failure."),
         @ApiResponse(code = 500, message = "Internal server error")})
     @RequestMapping(method = RequestMethod.POST)
     public void createStock(@ApiParam(name = "stock", value = "The stock entity", required = true) @Validated @RequestBody Stock stock){
         LOGGER.debug("Creating stock {}", stock);
-        stockService.createStock(stock);
+        stockService.createOrUpdateStock(stock);
     }
 
     @ResponseStatus(value = HttpStatus.PRECONDITION_FAILED)
