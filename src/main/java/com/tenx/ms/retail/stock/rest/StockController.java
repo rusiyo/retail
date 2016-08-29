@@ -3,6 +3,7 @@ package com.tenx.ms.retail.stock.rest;
 import com.tenx.ms.commons.rest.AbstractController;
 import com.tenx.ms.commons.rest.RestConstants;
 import com.tenx.ms.retail.exceptions.UpdateViolationException;
+import com.tenx.ms.retail.product.rest.dto.Product;
 import com.tenx.ms.retail.stock.rest.dto.Stock;
 import com.tenx.ms.retail.stock.service.StockService;
 import io.swagger.annotations.Api;
@@ -41,9 +42,11 @@ public class StockController extends AbstractController {
         @ApiResponse(code = 200, message = "Successful creation/update of stock"),
         @ApiResponse(code = 412, message = "Validation failure."),
         @ApiResponse(code = 500, message = "Internal server error")})
-    @RequestMapping(method = RequestMethod.POST)
-    public void createStock(@ApiParam(name = "stock", value = "The stock entity", required = true) @Validated @RequestBody Stock stock) {
+    @RequestMapping(value = {"/{storeId:\\d+}/{productId:\\d+}"}, method = RequestMethod.POST)
+    public void createStock(@ApiParam(name="storeId", value = "The Id of the store in which the product exists", required = true) @PathVariable long storeId, @ApiParam(name = "productId", value = "The id of the product to fetch", required = true) @PathVariable long productId, @ApiParam(name = "stock", value = "The stock entity", required = true) @Validated @RequestBody Stock stock) {
         LOGGER.debug("Creating stock {}", stock);
+        stock.setProductId(productId);
+        stock.setStoreId(storeId);
         stockService.createOrUpdateStock(stock);
     }
 

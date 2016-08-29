@@ -48,4 +48,12 @@ public class Stock {
     public String toString() {
         return "Store #" + storeId + " Product Id: " + productId + " Total: " + count;
     }
+
+    public void setProductId(Long productId) {
+        this.productId = productId;
+    }
+
+    public void setStoreId(Long storeId) {
+        this.storeId = storeId;
+    }
 }
