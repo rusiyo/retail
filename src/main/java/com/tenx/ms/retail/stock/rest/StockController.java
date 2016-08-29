@@ -3,7 +3,6 @@ package com.tenx.ms.retail.stock.rest;
 import com.tenx.ms.commons.rest.AbstractController;
 import com.tenx.ms.commons.rest.RestConstants;
 import com.tenx.ms.retail.exceptions.UpdateViolationException;
-import com.tenx.ms.retail.product.rest.dto.Product;
 import com.tenx.ms.retail.stock.rest.dto.Stock;
 import com.tenx.ms.retail.stock.service.StockService;
 import io.swagger.annotations.Api;
@@ -43,7 +42,7 @@ public class StockController extends AbstractController {
         @ApiResponse(code = 412, message = "Validation failure."),
         @ApiResponse(code = 500, message = "Internal server error")})
     @RequestMapping(value = {"/{storeId:\\d+}/{productId:\\d+}"}, method = RequestMethod.POST)
-    public void createStock(@ApiParam(name="storeId", value = "The Id of the store in which the product exists", required = true) @PathVariable long storeId, @ApiParam(name = "productId", value = "The id of the product to fetch", required = true) @PathVariable long productId, @ApiParam(name = "stock", value = "The stock entity", required = true) @Validated @RequestBody Stock stock) {
+    public void createStock(@ApiParam(name = "storeId", value = "The Id of the store in which the product exists", required = true) @PathVariable long storeId, @ApiParam(name = "productId", value = "The id of the product to fetch", required = true) @PathVariable long productId, @ApiParam(name = "stock", value = "The stock entity", required = true) @Validated @RequestBody Stock stock) {
         LOGGER.debug("Creating stock {}", stock);
         stock.setProductId(productId);
         stock.setStoreId(storeId);
@@ -52,11 +51,11 @@ public class StockController extends AbstractController {
 
     @ApiOperation(value = "")
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "Successful retrieval of product in store"),
+        @ApiResponse(code = 200, message = "Successful product's stock in store"),
         @ApiResponse(code = 404, message = "Product not found in Store"),
         @ApiResponse(code = 500, message = "Internal server error")})
     @RequestMapping(value = {"/{storeId:\\d+}/{productId:\\d+}"}, method = RequestMethod.GET)
-    public Object getProductById(@ApiParam(value = "storeId", required = false) @PathVariable long storeId, @ApiParam(name = "productId", value = "The id of the product to fetch") @PathVariable long productId) {
+    public Stock getProductById(@ApiParam(name = "storeId", value = "The Id of the store in which the product exists", required = true) @PathVariable long storeId, @ApiParam(name = "productId", value = "The id of the product's stock to fetch", required = true) @PathVariable long productId) {
         LOGGER.debug("Fetching Product by Id {}", productId);
         return stockService.findOneByStoreIdAndProductId(storeId, productId).get();
     }
