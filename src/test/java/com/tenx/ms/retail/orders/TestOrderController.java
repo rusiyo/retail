@@ -67,7 +67,7 @@ public class TestOrderController extends AbstractIntegrationTest {
         List<File> validationFiles = Arrays.asList(badRequest1, badRequest2, badRequest3, badRequest4, badRequest5, badRequest6, badRequest7, badRequest8);
         for (File file : validationFiles) {
             try {
-                ResponseEntity<String> response = getJSONResponse(template, String.format(REQUEST_URI, basePath()), FileUtils.readFileToString(file), HttpMethod.POST);
+                ResponseEntity<String> response = getJSONResponse(template, String.format(REQUEST_URI, basePath()) + "1", FileUtils.readFileToString(file), HttpMethod.POST);
                 assertEquals("HTTP Status code incorrect", HttpStatus.PRECONDITION_FAILED, response.getStatusCode());
             } catch (IOException e) {
                 fail(e.getMessage());
@@ -81,7 +81,7 @@ public class TestOrderController extends AbstractIntegrationTest {
         List<File> validationFiles = Arrays.asList(invalidRequest1);
         for (File file : validationFiles) {
             try {
-                ResponseEntity<String> response = getJSONResponse(template, String.format(REQUEST_URI, basePath()), FileUtils.readFileToString(file), HttpMethod.POST);
+                ResponseEntity<String> response = getJSONResponse(template, String.format(REQUEST_URI, basePath()) + "1", FileUtils.readFileToString(file), HttpMethod.POST);
                 assertEquals("HTTP Status code incorrect", HttpStatus.BAD_REQUEST, response.getStatusCode());
             } catch (IOException e) {
                 fail(e.getMessage());
@@ -93,7 +93,7 @@ public class TestOrderController extends AbstractIntegrationTest {
     @FlywayTest
     public void testCreateOrder() {
         try {
-            ResponseEntity<String> response = getJSONResponse(template, String.format(REQUEST_URI, basePath()), FileUtils.readFileToString(goodRequest1), HttpMethod.POST);
+            ResponseEntity<String> response = getJSONResponse(template, String.format(REQUEST_URI, basePath()) + "1", FileUtils.readFileToString(goodRequest1), HttpMethod.POST);
             String received = response.getBody();
             assertEquals("HTTP Status code incorrect", HttpStatus.OK, response.getStatusCode());
             assertEquals("Body is not empty", received, null);

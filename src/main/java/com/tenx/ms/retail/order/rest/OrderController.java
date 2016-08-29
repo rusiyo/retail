@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -40,9 +41,10 @@ public class OrderController extends AbstractController {
         @ApiResponse(code = 200, message = "Successful creation of order"),
         @ApiResponse(code = 412, message = "Validation failure."),
         @ApiResponse(code = 500, message = "Internal server error")})
-    @RequestMapping(method = RequestMethod.POST)
-    public void createOrder(@ApiParam(name = "order", value = "The order entity", required = true) @Validated @RequestBody Order order) {
+    @RequestMapping(method = RequestMethod.POST, value = {"/{storeId:\\d+}"})
+    public void createOrder(@ApiParam(name = "storeId", value = "The Id of the store in which the order will be created", required = true) @PathVariable long storeId, @ApiParam(name = "order", value = "The order entity", required = true) @Validated @RequestBody Order order) {
         LOGGER.debug("Creating order {}", order);
+        order.setStoreId(storeId);
         orderService.createOrder(order);
     }
 

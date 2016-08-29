@@ -62,7 +62,7 @@ public class TestStockController extends AbstractIntegrationTest {
         List<File> validationFiles = Arrays.asList(badRequest1, badRequest2, badRequest3);
         for (File file : validationFiles) {
             try {
-                ResponseEntity<String> response = getJSONResponse(template, String.format(REQUEST_URI, basePath()), FileUtils.readFileToString(file), HttpMethod.POST);
+                ResponseEntity<String> response = getJSONResponse(template, String.format(REQUEST_URI, basePath()) + "1/1", FileUtils.readFileToString(file), HttpMethod.POST);
                 assertEquals("HTTP Status code incorrect", HttpStatus.PRECONDITION_FAILED, response.getStatusCode());
             } catch (IOException e) {
                 fail(e.getMessage());
@@ -74,7 +74,7 @@ public class TestStockController extends AbstractIntegrationTest {
     @FlywayTest
     public void testCreateStock() {
         try {
-            ResponseEntity<String> response = getJSONResponse(template, String.format(REQUEST_URI, basePath()), FileUtils.readFileToString(goodRequest1), HttpMethod.POST);
+            ResponseEntity<String> response = getJSONResponse(template, String.format(REQUEST_URI, basePath()) + "1/1", FileUtils.readFileToString(goodRequest1), HttpMethod.POST);
             String received = response.getBody();
             assertEquals("HTTP Status code incorrect", HttpStatus.OK, response.getStatusCode());
             assertEquals("Body is not empty", received, null);
@@ -100,7 +100,7 @@ public class TestStockController extends AbstractIntegrationTest {
 
     private void createOrUpdateStock(File file) {
         try {
-            ResponseEntity<String> response = getJSONResponse(template, String.format(REQUEST_URI, basePath()), FileUtils.readFileToString(file), HttpMethod.POST);
+            ResponseEntity<String> response = getJSONResponse(template, String.format(REQUEST_URI, basePath()) + "1/1", FileUtils.readFileToString(file), HttpMethod.POST);
             String received = response.getBody();
             assertEquals("HTTP Status code incorrect", HttpStatus.OK, response.getStatusCode());
             assertEquals("Body is not empty", received, null);

@@ -119,4 +119,8 @@ public class Order {
     public String toString() {
         return "Order #" + orderId + " from Store: " + storeId + " For: " + firstName + " " + lastName + "(" + phone + ")";
     }
+
+    public void setStoreId(long storeId) {
+        this.storeId = storeId;
+    }
 }
