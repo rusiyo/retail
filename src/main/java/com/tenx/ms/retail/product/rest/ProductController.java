@@ -64,10 +64,11 @@ public class ProductController extends AbstractController {
         @ApiResponse(code = 200, message = "Successful creation of product"),
         @ApiResponse(code = 412, message = "Validation failure."),
         @ApiResponse(code = 500, message = "Internal server error")})
-    @RequestMapping(method = RequestMethod.POST)
-    public ResourceCreated<Long> createProduct(@ApiParam(name = "product", value = "The product entity", required = true) @Validated @RequestBody Product product) {
+    @RequestMapping(method = RequestMethod.POST, value = {"/{storeId:\\d+}"})
+    public ResourceCreated<Long> createProduct(@ApiParam(value = "storeId", required = false) Long storeId, @ApiParam(name = "product", value = "The product entity", required = true) @Validated @RequestBody Product product) {
         LOGGER.debug("Creating product {}", product);
-        return new ResourceCreated<Long>(productService.createProduct(product));
+        product.setStoreId(storeId);
+        return new ResourceCreated<>(productService.createProduct(product));
     }
 
     @ResponseStatus(value = HttpStatus.PRECONDITION_FAILED)

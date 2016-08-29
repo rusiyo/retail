@@ -83,7 +83,7 @@ public class TestProductController extends AbstractIntegrationTest {
         List<File> validationFiles = Arrays.asList(badRequest1, badRequest3, badRequest4, badRequest5, badRequest6, badRequest7, badRequest8);
         for (File file : validationFiles) {
             try {
-                ResponseEntity<String> response = getJSONResponse(template, String.format(REQUEST_URI, basePath()), FileUtils.readFileToString(file), HttpMethod.POST);
+                ResponseEntity<String> response = getJSONResponse(template, String.format(REQUEST_URI, basePath()) + "1", FileUtils.readFileToString(file), HttpMethod.POST);
                 assertEquals("HTTP Status code incorrect", HttpStatus.PRECONDITION_FAILED, response.getStatusCode());
             } catch (IOException e) {
                 fail(e.getMessage());
@@ -97,7 +97,7 @@ public class TestProductController extends AbstractIntegrationTest {
         List<File> validationFiles = Arrays.asList(badRequest2);
         for (File file : validationFiles) {
             try {
-                ResponseEntity<String> response = getJSONResponse(template, String.format(REQUEST_URI, basePath()), FileUtils.readFileToString(file), HttpMethod.POST);
+                ResponseEntity<String> response = getJSONResponse(template, String.format(REQUEST_URI, basePath()) + "1", FileUtils.readFileToString(file), HttpMethod.POST);
                 assertEquals("HTTP Status code incorrect", HttpStatus.BAD_REQUEST, response.getStatusCode());
             } catch (IOException e) {
                 fail(e.getMessage());
@@ -159,7 +159,7 @@ public class TestProductController extends AbstractIntegrationTest {
 
     private Integer createProduct(File file) {
         try {
-            ResponseEntity<String> response = getJSONResponse(template, String.format(REQUEST_URI, basePath()), FileUtils.readFileToString(file), HttpMethod.POST);
+            ResponseEntity<String> response = getJSONResponse(template, String.format(REQUEST_URI, basePath()) + "1", FileUtils.readFileToString(file), HttpMethod.POST);
             String received = response.getBody();
             ResourceCreated<Integer> rc = mapper.readValue(received, ResourceCreated.class);
             assertEquals("HTTP Status code incorrect", HttpStatus.OK, response.getStatusCode());
