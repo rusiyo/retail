@@ -21,10 +21,11 @@ public class OrderService {
     private OrderConverter orderConverter;
 
     @Transactional
-    public void createOrder(Order order) {
+    public Order createOrder(Order order) {
         LOGGER.debug("Create new {}", order);
         OrderEntity orderEntity = orderConverter.convertToOrderEntity(order);
-        orderRepository.save(orderEntity);
+        orderEntity = orderRepository.save(orderEntity);
+        return orderConverter.convertToOrderDTO(orderEntity);
     }
 }
 

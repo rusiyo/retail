@@ -42,10 +42,10 @@ public class OrderController extends AbstractController {
         @ApiResponse(code = 412, message = "Validation failure."),
         @ApiResponse(code = 500, message = "Internal server error")})
     @RequestMapping(method = RequestMethod.POST, value = {"/{storeId:\\d+}"})
-    public void createOrder(@ApiParam(name = "storeId", value = "The Id of the store in which the order will be created", required = true) @PathVariable long storeId, @ApiParam(name = "order", value = "The order entity", required = true) @Validated @RequestBody Order order) {
+    public Order createOrder(@ApiParam(name = "storeId", value = "The Id of the store in which the order will be created", required = true) @PathVariable long storeId, @ApiParam(name = "order", value = "The order entity", required = true) @Validated @RequestBody Order order) {
         LOGGER.debug("Creating order {}", order);
         order.setStoreId(storeId);
-        orderService.createOrder(order);
+        return orderService.createOrder(order);
     }
 
     @ResponseStatus(value = HttpStatus.PRECONDITION_FAILED)
