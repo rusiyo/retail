@@ -117,7 +117,7 @@ public class TestOrderController extends AbstractIntegrationTest {
             assertEquals("Order's  is incorrect", order.getEmail(), "test@account.com");
             assertEquals("Order's  is incorrect", order.getPhone(), "786-970-0939");
 
-            DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ENGLISH);
             df.setTimeZone(TimeZone.getTimeZone("UTC"));
             Date parsedDate = df.parse("2016-04-01T19:01:02");
 
