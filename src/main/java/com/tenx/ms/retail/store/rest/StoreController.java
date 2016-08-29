@@ -55,7 +55,7 @@ public class StoreController extends AbstractController {
         @ApiResponse(code = 404, message = "Store not found"),
         @ApiResponse(code = 500, message = "Internal server error")})
     @RequestMapping(value = {"/{storeId:\\d+}"}, method = RequestMethod.GET)
-    public Object getStoreById(@ApiParam(name = "storeId", value = "The id of the store to fetch") @PathVariable long storeId) {
+    public Store getStoreById(@ApiParam(name = "storeId", value = "The id of the store to fetch") @PathVariable long storeId) {
         LOGGER.debug("Fetching Store by Id {}", storeId);
         return storeService.getStoreById(storeId).get();
     }

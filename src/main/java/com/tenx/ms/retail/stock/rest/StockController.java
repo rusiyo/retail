@@ -29,7 +29,7 @@ import java.io.IOException;
 
 @Api(value = "stock", description = "This provides the ability to create, update and delete new Stocks.")
 @RestController("stockControllerV1")
-@RequestMapping(RestConstants.VERSION_ONE + "/stock")
+@RequestMapping(RestConstants.VERSION_ONE + "/stocks")
 public class StockController extends AbstractController {
     private static final Logger LOGGER = LoggerFactory.getLogger(StockController.class);
 

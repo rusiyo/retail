@@ -41,7 +41,7 @@ import static org.junit.Assert.fail;
 public class TestStockController extends AbstractIntegrationTest {
 
     private static final String API_VERSION = RestConstants.VERSION_ONE;
-    private static final String REQUEST_URI = "%s" + API_VERSION + "/stock/";
+    private static final String REQUEST_URI = "%s" + API_VERSION + "/stocks/";
     private final RestTemplate template = new TestRestTemplate();
     @Autowired
     private ObjectMapper mapper;
