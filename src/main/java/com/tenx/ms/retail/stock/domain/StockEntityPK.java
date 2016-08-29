@@ -5,6 +5,7 @@ import java.io.Serializable;
 public class StockEntityPK implements Serializable {
 
     private Long storeId;
+    private Long productId;
 
     public Long getStoreId() {
         return storeId;
@@ -21,7 +22,5 @@ public class StockEntityPK implements Serializable {
     public void setProductId(Long productId) {
         this.productId = productId;
     }
-
-    private Long productId;
 
 }

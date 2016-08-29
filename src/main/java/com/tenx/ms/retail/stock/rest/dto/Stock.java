@@ -32,8 +32,16 @@ public class Stock {
         return storeId;
     }
 
+    public void setStoreId(Long storeId) {
+        this.storeId = storeId;
+    }
+
     public Long getProductId() {
         return productId;
+    }
+
+    public void setProductId(Long productId) {
+        this.productId = productId;
     }
 
     public Integer getCount() {
@@ -47,13 +55,5 @@ public class Stock {
 
     public String toString() {
         return "Store #" + storeId + " Product Id: " + productId + " Total: " + count;
-    }
-
-    public void setProductId(Long productId) {
-        this.productId = productId;
-    }
-
-    public void setStoreId(Long storeId) {
-        this.storeId = storeId;
     }
 }

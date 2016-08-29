@@ -42,7 +42,7 @@ public class ProductController extends AbstractController {
     @ApiOperation(value = "Get all products by store id")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "Successful retrieval of products in store"), @ApiResponse(code = 500, message = "Internal server error")})
     @RequestMapping(method = RequestMethod.GET, value = {"/{storeId:\\d+}"})
-    public List<Product> getProducts(@ApiParam(name="storeId", value = "The Id of the store in which the product exists", required = true) @PathVariable long storeId, Pageable pageable) {
+    public List<Product> getProducts(@ApiParam(name = "storeId", value = "The Id of the store in which the product exists", required = true) @PathVariable long storeId, Pageable pageable) {
         LOGGER.debug("Fetching Products");
 
         return productService.getProductsByStoreId(storeId, pageable);
@@ -54,7 +54,7 @@ public class ProductController extends AbstractController {
         @ApiResponse(code = 404, message = "Product not found in Store"),
         @ApiResponse(code = 500, message = "Internal server error")})
     @RequestMapping(value = {"/{storeId:\\d+}/{productId:\\d+}"}, method = RequestMethod.GET)
-    public Product getProductById(@ApiParam(name="storeId", value = "The Id of the store in which the product exists", required = true) @PathVariable long storeId, @ApiParam(name = "productId", value = "The id of the product to fetch", required = true) @PathVariable long productId) {
+    public Product getProductById(@ApiParam(name = "storeId", value = "The Id of the store in which the product exists", required = true) @PathVariable long storeId, @ApiParam(name = "productId", value = "The id of the product to fetch", required = true) @PathVariable long productId) {
         LOGGER.debug("Fetching Product by Id {}", productId);
         return productService.getProductById(storeId, productId).get();
     }
@@ -65,7 +65,7 @@ public class ProductController extends AbstractController {
         @ApiResponse(code = 412, message = "Validation failure."),
         @ApiResponse(code = 500, message = "Internal server error")})
     @RequestMapping(method = RequestMethod.POST, value = {"/{storeId:\\d+}"})
-    public ResourceCreated<Long> createProduct(@ApiParam(name="storeId", value = "The Id of the store in which the product will be created", required = true) @PathVariable long storeId, @ApiParam(name = "product", value = "The product entity", required = true) @Validated @RequestBody Product product) {
+    public ResourceCreated<Long> createProduct(@ApiParam(name = "storeId", value = "The Id of the store in which the product will be created", required = true) @PathVariable long storeId, @ApiParam(name = "product", value = "The product entity", required = true) @Validated @RequestBody Product product) {
         LOGGER.debug("Creating product {}", product);
         product.setStoreId(storeId);
         return new ResourceCreated<>(productService.createProduct(product));
